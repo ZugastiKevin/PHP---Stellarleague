@@ -5,5 +5,3 @@
         $linkScripts = './../assets/scripts/';
     }
 ?>
-<script src='<?= $linkScripts ?>hover_nav.js'></script>
-<script src='<?= $linkScripts ?>open-book.js'></script>
