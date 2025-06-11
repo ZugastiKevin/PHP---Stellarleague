@@ -1,9 +1,13 @@
+@use '../abstracts/variables' as v;
+
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0px auto;
+    background-color: v.$color-bg;
+    font-family: v.$font-primary;
 }
 
 section {

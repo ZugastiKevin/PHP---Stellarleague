@@ -1,7 +1,48 @@
-@use "../abstracts/variables" as variable;
+@use "../abstracts/variables" as v;
 
 header {
-    
+    background-color: v.$color-primary;
+    padding: 1rem 0;
+    nav {
+
+        ul {
+            display: flex;
+            justify-content: center;
+            gap: 3vw;
+            li {
+                list-style: none;
+                .nav {
+                    padding: 0.3rem 1rem;
+                    background-color: v.$color-secondary;
+                    border: 2px solid v.$color-accent;
+                    border-radius: 3px;
+                    color: white;
+                }
+            }
+            div {
+                    display: flex;
+                    gap: 1rem;
+                    i {
+                        color: v.$color-accent;
+                        font-size: 2rem;
+                    }
+                    #magnifyer {
+                        position: relative;
+                        left: -30%;
+                        top: 20%;
+                    }
+                    #searchInput {
+                        background-color: v.$color-secondary;
+                        color: grey;
+                        padding: 0.7rem 0.1rem;
+                        padding-top: 1rem;
+                        font-size: 1.4rem;
+                        border-color: v.$color-accent;
+                        border-radius: 10px;
+                    }
+                }            
+        }
+    }
 }
 
 @media screen and (min-width:1921px) {  
