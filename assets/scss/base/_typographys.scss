@@ -1,12 +1,11 @@
-@use "../abstracts/variables" as v ;
 @font-face {
-    font-family: v.$font-secondary;
-    src: url(../../fonts/Orbitron/static/Orbitron-Regular.ttf);
+    font-family: "Orbitron Regular";
+    src: url('./../fonts/Orbitron/static/Orbitron-Regular.ttf');
     font-weight: 400;
 };
 
 @font-face {
-    font-family: v.$font-primary;
-    src: url(../../fonts/Exo_2/static/Exo2-Regular.ttf);
+    font-family: "Exo2 Regular";
+    src: url('./../fonts/Exo_2/static/Exo2-Regular.ttf');
     font-weight: 400;
 };
