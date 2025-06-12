@@ -48,7 +48,7 @@
 ?>
 
 <body>
-    <?php include('/var/www/html/codex/layout/header.php'); ?>
+    <?php require_once __DIR__ . '/../layout/header.php'; ?>
     <main>
         <div>
             <form action="create_user.php" method="post">
@@ -62,5 +62,5 @@
             </form>
         </div>
     </main>
-    <?php include('/var/www/html/codex/function/scripts.php'); ?>
+    <?php require_once __DIR__ . '/../function/scripts.php';?>
 </body>
