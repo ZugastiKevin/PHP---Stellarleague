@@ -39,7 +39,7 @@
         $requestTournaments = $bdd->prepare(
             'SELECT one.tournament_id AS tournament_id, e.nameTournament AS nameTournament 
             FROM usersTournament one
-            JOIN tournament e TO one.tournament_id = e.id
+            JOIN tournament e ON one.tournament_id = e.id
             WHERE user_id = :user_id
         ');
         $requestTournaments->execute(['user_id' => $id]);
