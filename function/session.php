@@ -1,5 +1,5 @@
 <?php
-    include_once('./../environnement.php');
+    include_once(BASE_URL.'/environnement.php');
 
     if (!empty($_COOKIE['token-user'])) {
         $token = $_COOKIE['token-user'];
@@ -71,7 +71,7 @@
     }
 
     function createSessionUserWithRemember($id, $pseudo, $role) {
-        include_once('./../environnement.php');
+        include_once(BASE_URL.'/environnement.php');
         setSession($id, $pseudo, $role, $bdd);
         updateToken($id, $bdd);
     }

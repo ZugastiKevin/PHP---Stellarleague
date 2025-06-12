@@ -15,10 +15,10 @@
         $encryption = trim(htmlspecialchars($_POST["password"]));
         if (password_verify($encryption, $data['pass'])) {
             if (isset($_POST['remember-me']) == true) {
-                createSessionUserWithRemember($data['id'], $data['pseudo'], $data['userRole']);
+                createSessionUserWithRemember($data['id'], $data['pseudo'], $data['userRole'], $bdd);
                 header('location:'.BASE_URL.'/index.php');
             } else {
-                setSession($data['id'], $data['pseudo'], $data['userRole']);
+                setSession($data['id'], $data['pseudo'], $data['userRole'], $bdd);
                 header('location:'.BASE_URL.'/index.php');
             }
         } else {
