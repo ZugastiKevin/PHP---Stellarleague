@@ -30,17 +30,16 @@
 <body>
     <?php include_once('../layout/header.php'); ?>
     <main>
-        <div>
+        <div class="login-container">
+            <h2>Connexion</h2>
             <form action="login.php" method="post">
-                <label for="email">Votre email</label>
-                <input type="email" name="email" required>
-                <label for="password">Votre mots de passe</label>
-                <input type="password" name="password" required>
+                <input placeholder="Votre email" type="email" name="email" required>
+                <input placeholder="Votre mot de passe" type="password" name="password" required>
                 <label for="remember-me">
                     Se souvenir de moi ?
                     <input type="checkbox" name="remember-me" value="true">
                 </label>
-                <input type="submit" value="Connection">
+                <input id="submit" type="submit" value="Connexion">
             </form>
         </div>
     </main>

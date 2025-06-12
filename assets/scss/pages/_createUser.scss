@@ -3,17 +3,13 @@
 main {
     display: flex;
     justify-content: center;
-    .login-container {
+    div {
         background-color: v.$color-primary;
         text-align: center;
         width: 30%;
         margin-top: 3rem;
         border-radius: 10px;
         color: white;
-        padding: 0.5rem;
-        h2 {
-            margin-top: 0;
-        }
         form {
             display: flex;
             flex-direction: column;
