@@ -6,7 +6,7 @@
     if (!empty($_POST['email']) && !empty($_POST['password'])) {
         $email = trim(strtolower(htmlspecialchars($_POST["email"])));
         $requestPrepareUser = $bdd->prepare(
-            "SELECT id, pseudo, email, pass, user_role
+            "SELECT id, pseudo, email, pass, userRole
             FROM users
             WHERE email = :email
         ");
