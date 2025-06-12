@@ -2,7 +2,6 @@
     ob_start();
     session_start();
     $bdd = new PDO('mysql:host=mysql;dbname=stellarleague;charset=utf8','root','root');
-    include_once('/function/session.php');
 
     if (!empty($_COOKIE['token-user'])) {
         $token = $_COOKIE['token-user'];
