@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Jun 12, 2025 at 02:36 PM
+-- Generation Time: Jun 12, 2025 at 09:13 PM
 -- Server version: 8.0.42
 -- PHP Version: 8.2.27
 
@@ -30,9 +30,18 @@ SET time_zone = "+00:00";
 CREATE TABLE `classement` (
   `id` int NOT NULL,
   `tournament_id` int NOT NULL,
-  `user_id_continue` int NOT NULL,
-  `user_id_stop` int NOT NULL
+  `user_id_continue` int DEFAULT NULL,
+  `user_id_stop` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `classement`
+--
+
+INSERT INTO `classement` (`id`, `tournament_id`, `user_id_continue`, `user_id_stop`) VALUES
+(21, 2, NULL, 2),
+(22, 2, 0, 3),
+(23, 2, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -60,6 +69,14 @@ CREATE TABLE `tournament` (
   `prize` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `tournament`
+--
+
+INSERT INTO `tournament` (`id`, `nameTournament`, `startAt`, `endAt`, `userLimit`, `prize`) VALUES
+(1, 'lol', 1750291200, NULL, 16, 'lol'),
+(2, 'popop', 1750338000, NULL, 16, 'pop');
+
 -- --------------------------------------------------------
 
 --
@@ -82,7 +99,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `pseudo`, `email`, `pass`, `userRole`, `imgAvatar`, `token`, `tokenValidate`) VALUES
-(1, 'courgette', 'courgette@pioupiou.net', '$argon2i$v=19$m=65536,t=4,p=1$WkVPcW1rOGc1b1dFOVYubQ$8GVywuwXFbvftHvWt23NxpMzlyrsVAq0el1qrsf/6Tg', 'user', 'default_avatar.jpg', NULL, NULL);
+(1, 'courgette', 'courgette@pioupiou.net', '$argon2i$v=19$m=65536,t=4,p=1$WkVPcW1rOGc1b1dFOVYubQ$8GVywuwXFbvftHvWt23NxpMzlyrsVAq0el1qrsf/6Tg', 'admin', 'default_avatar.jpg', NULL, NULL),
+(2, 'p', 'p@p.p', '$argon2i$v=19$m=65536,t=4,p=1$SDRjVVcvLkRyeThiQ3pLZA$NeHNOH+gBMsR2GXWoY1bR8JWUvIcvdCoK3UTg3aSOfA', 'user', 'default_avatar.jpg', NULL, NULL),
+(3, 'o', 'o@o.o', '$argon2i$v=19$m=65536,t=4,p=1$UDRzTVlZRkouTm5CYWk1QQ$0JhdCiwdgyVQwoOnU5sOx3JVF//Qz6zekfgMjxPzhqo', 'user', 'default_avatar.jpg', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -107,6 +126,15 @@ CREATE TABLE `usersTournament` (
   `user_id` int NOT NULL,
   `tournament_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `usersTournament`
+--
+
+INSERT INTO `usersTournament` (`id`, `user_id`, `tournament_id`) VALUES
+(21, 2, 2),
+(22, 3, 2),
+(23, 2, 2);
 
 --
 -- Indexes for dumped tables
@@ -156,7 +184,7 @@ ALTER TABLE `usersTournament`
 -- AUTO_INCREMENT for table `classement`
 --
 ALTER TABLE `classement`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `pending_list`
@@ -168,13 +196,13 @@ ALTER TABLE `pending_list`
 -- AUTO_INCREMENT for table `tournament`
 --
 ALTER TABLE `tournament`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `usersPending_list`
@@ -186,7 +214,7 @@ ALTER TABLE `usersPending_list`
 -- AUTO_INCREMENT for table `usersTournament`
 --
 ALTER TABLE `usersTournament`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
