@@ -1,5 +1,4 @@
 <?php
-    include_once(BASE_URL.'/environnement.php');
 
     if (!empty($_COOKIE['token-user'])) {
         $token = $_COOKIE['token-user'];
