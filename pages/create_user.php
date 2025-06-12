@@ -1,6 +1,7 @@
 <?php
     $title = 'Cree un compte';
     include('../function/head.php');
+    include('../function/session.php');
 
     if (isset($_POST["pseudo"]) && isset($_POST["email"]) && isset($_POST["password"])) {
         $pseudo = trim(strtolower(htmlspecialchars($_POST["pseudo"])));
@@ -12,22 +13,23 @@
             FROM users
             WHERE email = :email
         ');
-        $requestExistUser->execute([
-            'email' => $email,
-        ]);
+        $requestExistUser->execute(['email' => $email]);
         $resultExist = $requestExistUser->fetch();
-
-        if (!$resultExist['pseudo']) {
-            if (!$resultExist['email']) {
+        $pseudoExist = $resultExist['pseudo'];
+        $emailExist = $resultExist['email'];
+        
+        if (!$pseudoExist) {
+            if (!$emailExist) {
                 $requestCreate = $bdd->prepare(
-                    'INSERT INTO users(pseudo,email,userRole,pass) 
-                    VALUES (:pseudo,:email,:userRole,:pass)
+                    'INSERT INTO users(pseudo,email,userRole,pass,imgAvatar) 
+                    VALUES (:pseudo,:email,:userRole,:pass,:imgAvatar)
                 ');
                 $requestCreate->execute([
-                    'pseudo'=>$name,
+                    'pseudo'=>$pseudo,
                     'email'=>$email,
                     'userRole'=>'user',
-                    'pass'=>$encryption
+                    'pass'=>$encryption,
+                    'imgAvatar'=>'default_avatar.jpg'
                 ]);
                 $requestSelectUser = $bdd->prepare(
                     'SELECT id, pseudo, userRole
@@ -36,8 +38,8 @@
                 ');
                 $requestSelectUser->execute(['email'=>$email]);
                 $data = $requestSelectUser->fetch();
-                setSession($data['id'], $data['pseudo'], $data['userRole']);
-                header('location:http://localhost:8080/PHP---Stellarleague/index.php');
+                setSession($data['id'], $data['pseudo'], $data['userRole'], $bdd);
+                header('location:'.BASE_URL.'/index.php');
             } else {
                 echo 'Cette email existe deja.';
             }
@@ -48,7 +50,7 @@
 ?>
 
 <body>
-    <?php require_once __DIR__ . '/../layout/header.php'; ?>
+    <?php include_once('../layout/header.php'); ?>
     <main>
         <div>
             <h2>Créer un compte Stellarleague</h2>
@@ -60,5 +62,5 @@
             </form>
         </div>
     </main>
-    <?php require_once __DIR__ . '/../function/scripts.php';?>
+    <?php include_once('../function/scripts.php');?>
 </body>
