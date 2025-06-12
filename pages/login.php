@@ -1,7 +1,7 @@
 <?php
     $title = 'Connection';
-    include('/var/www/html/codex/function/call_bdd.php');
-    include('/var/www/html/codex/function/head.php');
+    include_once('../environnement.php');
+    include_once('../function/head.php');
 
     if (!empty($_POST['email']) && !empty($_POST['password'])) {
         $email = trim(strtolower(htmlspecialchars($_POST["email"])));
@@ -16,10 +16,10 @@
         if (password_verify($encryption, $data['pass'])) {
             if (isset($_POST['remember-me']) == true) {
                 createSessionUserWithRemember($data['id'], $data['pseudo'], $data['userRole']);
-                header("location:/index.php");
+                header('location:'.BASE_URL.'/index.php');
             } else {
                 setSession($data['id'], $data['pseudo'], $data['userRole']);
-                header("location:/index.php");
+                header('location:'.BASE_URL.'/index.php');
             }
         } else {
             echo 'Mots de passe ou email incorrects';
@@ -28,7 +28,7 @@
 ?>
 
 <body>
-    <?php include('/var/www/html/codex/layout/header.php'); ?>
+    <?php include_once('../layout/header.php'); ?>
     <main>
         <div>
             <form action="login.php" method="post">
@@ -44,5 +44,5 @@
             </form>
         </div>
     </main>
-    <?php include('/var/www/html/codex/function/scripts.php'); ?>
+    <?php include_once('../function/scripts.php'); ?>
 </body>

@@ -1,8 +1,5 @@
 <?php
-    ob_start();
-    session_start();
-
-    include('/var/www/html/PHP---Stellarleague/function/call_bdd.php');
+    include_once('../environnement.php');
 
     if (!empty($_COOKIE['token-user'])) {
         $token = $_COOKIE['token-user'];
@@ -40,11 +37,10 @@
         ]);
         session_unset();
         session_destroy();
-        header("location:http://localhost:8080/PHP---Stellarleague/index.php");
+        header('location:'.BASE_URL.'/index.php');
     }
 
-    function updateToken($id) {
-        include('/var/www/html/PHP---Stellarleague/function/call_bdd.php');
+    function updateToken($id, $bdd) {
         $token = bin2hex(random_bytes(32));
         $time = time() + (7 * 24 * 60 * 60);
         $requestUpdateToken = $bdd->prepare(
@@ -62,8 +58,7 @@
         ]);
     }
 
-    function setSession($id, $pseudo, $role) {
-        include('/var/www/html/PHP---Stellarleague/function/call_bdd.php');
+    function setSession($id, $pseudo, $role, $bdd) {
         $requestTournaments = $bdd->prepare(
             'SELECT one.tournament_id AS tournament_id, e.nameTournament AS nameTournament 
             FROM usersTournament one
@@ -72,10 +67,11 @@
         ');
         $requestTournaments->execute(['user_id' => $id]);
         $tournaments = $requestTournaments->fetch();
-        $_SESSION["currentUser"] = ['id'=>$data['id'], 'pseudo'=>$pseudo, 'tournaments'=>$tournaments, 'role'=>$role];
+        $_SESSION["currentUser"] = ['id'=>$id, 'pseudo'=>$pseudo, 'tournaments'=>$tournaments, 'role'=>$role];
     }
 
     function createSessionUserWithRemember($id, $pseudo, $role) {
-        setSession($id, $pseudo, $role);
-        updateToken($id);
+        include_once('../environnement.php');
+        setSession($id, $pseudo, $role, $bdd);
+        updateToken($id, $bdd);
     }

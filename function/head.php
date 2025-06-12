@@ -1,9 +1,10 @@
 <?php
-    include('/var/www/html/PHP---Stellarleague/function/session.php');
     if ($title == 'Accueil') {
-        $linkStyle = 'assets/css/style.css';
+        $linkStyle = '/assets/css/style.css';
+        include_once('/function/session.php');
     } else {
-        $linkStyle = './../assets/css/style.css';
+        $linkStyle = '../assets/css/style.css';
+        include_once('../function/session.php');
     }
 ?>
 
