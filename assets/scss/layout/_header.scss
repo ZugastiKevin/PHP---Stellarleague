@@ -17,6 +17,7 @@ header {
                     border: 2px solid v.$color-accent;
                     border-radius: 3px;
                     color: white;
+                    margin-top: 1rem;
                 }
             }
             div {
@@ -35,12 +36,11 @@ header {
                         background-color: v.$color-secondary;
                         color: grey;
                         padding: 0.7rem 0.1rem;
-                        padding-top: 1rem;
                         font-size: 1.4rem;
                         border-color: v.$color-accent;
                         border-radius: 10px;
                     }
-                }            
+                }           
         }
     }
 }

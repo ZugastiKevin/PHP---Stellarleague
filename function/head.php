@@ -1,5 +1,5 @@
 <?php
-    include_once(BASE_URL.'/session.php');
+    require_once __DIR__ . '/session.php';
 ?>
 
 <!DOCTYPE html>
