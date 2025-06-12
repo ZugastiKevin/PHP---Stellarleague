@@ -1,7 +1,7 @@
 <?php
     $title = 'Connection';
-    include_once('../environnement.php');
     include_once('../function/head.php');
+    include_once('../function/session.php');
 
     if (!empty($_POST['email']) && !empty($_POST['password'])) {
         $email = trim(strtolower(htmlspecialchars($_POST["email"])));
