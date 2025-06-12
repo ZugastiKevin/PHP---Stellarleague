@@ -1,6 +1,6 @@
 <?php
     $title = 'Cree un compte';
-    include('/var/www/html/codex/function/head.php');
+    include('../function/head.php');
 
     if (isset($_POST["pseudo"]) && isset($_POST["email"]) && isset($_POST["password"])) {
         $pseudo = trim(strtolower(htmlspecialchars($_POST["pseudo"])));
