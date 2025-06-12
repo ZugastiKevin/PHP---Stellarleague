@@ -22,9 +22,17 @@ main {
                 background-color: v.$color-secondary;
                 border: 2px solid v.$color-accent;
                 color: white;
-                #submit {
-                    background-color: v.$color-accent;
+                padding-left: 10%;
+                &::placeholder {
+                color: white;
                 }
+            }
+            #submit {
+                background-color: v.$color-accent;
+                width: 50%;
+                margin-left: 30%;
+                padding-left: 0;
+                color: black;
             }
         }
     }
