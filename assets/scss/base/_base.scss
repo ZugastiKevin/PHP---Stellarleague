@@ -8,6 +8,7 @@ body {
     margin: 0px auto;
     background-color: v.$color-bg;
     font-family: v.$font-primary;
+
 }
 
 section {
@@ -21,8 +22,11 @@ img {
 }
 
 h1 {
+    color: white;
 }
-
+p{
+    color: red;
+}
 ul {
     list-style: none;
     padding-left: 0px;
