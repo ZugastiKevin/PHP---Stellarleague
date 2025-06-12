@@ -1,9 +1,5 @@
 <?php
-// Remonte d’un dossier pour atteindre la racine où se trouve environnement.php
-require_once __DIR__ . '/../environnement.php';
-
-// Session, lui, est bien dans le même dossier ‘function’
-require_once __DIR__ . '/session.php';
+    require_once __DIR__ . '/../environnement.php';
 ?>
 
 <!DOCTYPE html>
