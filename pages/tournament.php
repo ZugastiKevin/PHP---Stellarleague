@@ -51,31 +51,30 @@
                 header('location:'.BASE_URL.'/pages/tournament.php?id='.$id);
             }
             if (isset($_POST["validate_user"]) && isset($_POST["validated_user_id"])) {
-                $validatedUserId = (int)$_POST["validated_user_id"];
+                $validatedUserId = htmlspecialchars((int)$_POST["validated_user_id"]);
 
-                // Insérer dans usersTournament
-                $insertUserTournament = $bdd->prepare(
-                    "INSERT INTO usersTournament (user_id, tournament_id) VALUES (:user_id, :tournament_id)"
-                );
-                $insertUserTournament->execute([
+                $requestInsertUserTournament = $bdd->prepare(
+                    'INSERT INTO usersTournament(user_id, tournament_id)
+                    VALUES (:user_id, :tournament_id)
+                ');
+                $requestInsertUserTournament->execute([
                     'user_id' => $validatedUserId,
                     'tournament_id' => $id
                 ]);
 
-                // Supprimer de usersPending_list
                 $deleteFromPending = $bdd->prepare(
-                    "DELETE upl
-                    FROM usersPending_list upl
-                    JOIN pending_list pl ON upl.pending_list_id = pl.id
-                    WHERE upl.user_id = :user_id AND pl.tournament_id = :tournament_id"
-                );
-                $deleteFromPending->execute([
-                    'user_id' => $validatedUserId,
-                    'tournament_id' => $id
-                ]);
-
-                // Rediriger pour éviter double POST
-                header('Location: ' . $_SERVER['REQUEST_URI']);
+                    'DELETE usersPending_list
+                    FROM usersPending_list one
+                    JOIN pending_list e ON one.pending_list_id = e.id
+                    WHERE one.user_id = :user_id AND e.tournament_id = :tournament_id
+                ');
+                foreach ($validatedUserId as $userId) {
+                    $deleteFromPending->execute([
+                        'user_id' => $validatedUserId,
+                        'tournament_id' => $id
+                    ]);
+                }
+                header('location:'.BASE_URL.'/pages/tournament.php?id='.$id);
             }
         }
     } else {

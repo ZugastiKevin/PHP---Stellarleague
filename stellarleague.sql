@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Jun 12, 2025 at 10:01 AM
+-- Generation Time: Jun 12, 2025 at 02:36 PM
 -- Server version: 8.0.42
 -- PHP Version: 8.2.27
 
@@ -37,14 +37,25 @@ CREATE TABLE `classement` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pending_list`
+--
+
+CREATE TABLE `pending_list` (
+  `id` int NOT NULL,
+  `tournament_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tournament`
 --
 
 CREATE TABLE `tournament` (
   `id` int NOT NULL,
   `nameTournament` varchar(255) NOT NULL,
-  `startAt` int NOT NULL,
-  `endAt` int NOT NULL,
+  `startAt` int DEFAULT NULL,
+  `endAt` int DEFAULT NULL,
   `userLimit` int NOT NULL,
   `prize` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -76,6 +87,18 @@ INSERT INTO `users` (`id`, `pseudo`, `email`, `pass`, `userRole`, `imgAvatar`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `usersPending_list`
+--
+
+CREATE TABLE `usersPending_list` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `pending_list_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `usersTournament`
 --
 
@@ -96,6 +119,12 @@ ALTER TABLE `classement`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `pending_list`
+--
+ALTER TABLE `pending_list`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tournament`
 --
 ALTER TABLE `tournament`
@@ -105,6 +134,12 @@ ALTER TABLE `tournament`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `usersPending_list`
+--
+ALTER TABLE `usersPending_list`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -124,6 +159,12 @@ ALTER TABLE `classement`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `pending_list`
+--
+ALTER TABLE `pending_list`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tournament`
 --
 ALTER TABLE `tournament`
@@ -134,6 +175,12 @@ ALTER TABLE `tournament`
 --
 ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `usersPending_list`
+--
+ALTER TABLE `usersPending_list`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `usersTournament`
