@@ -1,5 +1,5 @@
 <?php
-    $title = 'Crée un tournoi';
+    $title = 'Créer un tournoi';
     include_once('../function/head.php');
 
     if (isset($_SESSION["currentUser"]['role']) == 'admin') {
@@ -42,12 +42,13 @@
     <?php include_once('../layout/header.php'); ?>
     <main>
         <div>
-            <h2>Créer un compte Stellarleague</h2>
-            <form action="create_user.php" method="post">
-                <input placeholder="Entrez votre pseudo" type="text" name="pseudo" required>
-                <input placeholder="Entrez votre email" type="email" name="email" required>
-                <input placeholder="Entrez votre mots de passe" type="password" name="password" required>
-                <input id="submit" type="submit" value="Rejoindre Stellar League">
+            <h2>Créer un tournois</h2>
+            <form action="tournament.php" method="post">
+                <input placeholder="Entrez le nom du tournois" type="text" name="nameTournament" required>
+                <input placeholder="Entrez la date du début" type="date" name="startAt" required>
+                <input placeholder="Entrez le nombre maximum de joueurs" type="number" name="userLimit" required>
+                <input placeholder="Entrez le Prix" type="text" name="prize" required>
+                <input id="submit" type="submit" value="Créer le tournois">
             </form>
         </div>
     </main>

@@ -1,0 +1,21 @@
+@use '../abstracts/variables' as v;
+
+#main-admin{
+    color: white;
+    flex-direction: column;
+    align-items: center;
+        a {
+        padding: 0.3rem 1rem;
+        background-color: v.$color-secondary;
+        border: 2px solid v.$color-accent;
+        border-radius: 3px;
+        color: white;
+        margin-top: 5vh;
+        width: 20%;
+        text-align: center;
+    }
+    ul {
+        display: block;
+        color: white;
+    }
+}

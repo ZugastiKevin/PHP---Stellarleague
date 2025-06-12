@@ -5,5 +5,15 @@
 ?>
 
 <body>
-    <?php include_once 'layout/header.php'; ?>
+    <?php include_once 'layout/header.php'; 
+    if(isset($_SESSION["currentUser"])){
+        echo 'Bienvenue, ' . $_SESSION["currentUser"]['pseudo'];
+        var_dump($_SESSION);
+    }else{
+        echo 'Hello!';
+    }
+    ?>
+    
+
+    
 </body>
