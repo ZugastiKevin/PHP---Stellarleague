@@ -1,7 +1,7 @@
 <?php
     if ($title == 'Accueil') {
-        $linkStyle = '/assets/css/style.css';
-        include_once('/function/session.php');
+        $linkStyle = 'assets/css/style.css';
+        include_once('function/session.php');
     } else {
         $linkStyle = '../assets/css/style.css';
         include_once('../function/session.php');
