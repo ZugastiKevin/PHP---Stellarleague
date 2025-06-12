@@ -41,10 +41,10 @@
                 setSession($data['id'], $data['pseudo'], $data['userRole'], $bdd);
                 header('location:'.BASE_URL.'/index.php?message=success');
             } else {
-                echo 'Cette email existe deja.';
+                echo '<p>Cette email existe deja.</p>';
             }
         } else {
-            echo 'Ceux pseudo est deja pris.';
+            echo '<p>Ceux pseudo est deja pris.</p>';
         }
     }
 ?>
