@@ -39,7 +39,7 @@
                 $requestSelectUser->execute(['email'=>$email]);
                 $data = $requestSelectUser->fetch();
                 setSession($data['id'], $data['pseudo'], $data['userRole'], $bdd);
-                header('location:'.BASE_URL.'/index.php');
+                header('location:'.BASE_URL.'/index.php?message=success');
             } else {
                 echo 'Cette email existe deja.';
             }
