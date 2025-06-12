@@ -130,7 +130,7 @@
 
 <?php
 // Exemple de tableau initial de joueurs (id, pseudo)
-$players = [
+$joueurs = [
     ['id'=>1,  'pseudo'=>'MaxPax'],
     ['id'=>2,  'pseudo'=>'Heaven'],
     ['id'=>3,  'pseudo'=>'Epic'],
@@ -162,10 +162,10 @@ $currentRoundPlayers = $players;
   <?php for ($round = 1; $round <= $R; $round++) : 
         // Titres selon le tour
         $roundNames = [
-          1      => 'Round of ' . $J,
-          2      => 'Quarterfinals',
-          $R-1   => 'Semi-Finals (Bo5)',
-          $R     => 'Finals (Bo5)',
+          1      => 'Round des' . $J,
+          2      => 'Quart de finale',
+          $R-1   => 'Demi-Finale',
+          $R     => 'Finale',
         ];
         $title = $roundNames[$round] ?? "Round $round";
         $matchCount = count($currentRoundPlayers) / 2;
@@ -184,7 +184,7 @@ $currentRoundPlayers = $players;
           </div>
           <div class="team team--placeholder">
             <span class="name"><?= htmlspecialchars($p2['pseudo']) ?></span>
-            <span class="score">–</span>
+            <span class="score">-</span>
           </div>
         </div>
       <?php endfor; ?>
