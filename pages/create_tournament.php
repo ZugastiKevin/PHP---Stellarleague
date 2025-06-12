@@ -19,8 +19,8 @@
             
             if (!$resultExist) {
                 $requestCreate = $bdd->prepare(
-                    'INSERT INTO tournament(nameTournament,startAt,userLimit,prize,imgAvatar) 
-                    VALUES (:nameTournament,:startAt,:userLimit,:prize,:imgAvatar)
+                    'INSERT INTO tournament(nameTournament,startAt,userLimit,prize) 
+                    VALUES (:nameTournament,:startAt,:userLimit,:prize)
                 ');
                 $requestCreate->execute([
                     'nameTournament'=>$nameTournament,
