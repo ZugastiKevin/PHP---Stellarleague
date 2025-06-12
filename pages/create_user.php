@@ -51,14 +51,12 @@
     <?php require_once __DIR__ . '/../layout/header.php'; ?>
     <main>
         <div>
+            <h2>Créer un compte Stellarleague</h2>
             <form action="create_user.php" method="post">
-                <label for="pseudo">Entrez votre pseudo</label>
-                <input type="text" name="pseudo" required>
-                <label for="email">Entrez votre email</label>
-                <input type="email" name="email" required>
-                <label for="password">Entrez votre mots de passe</label>
-                <input type="password" name="password" required>
-                <input type="submit" value="Rejoindre Stellar League">
+                <input placeholder="Entrez votre pseudo" type="text" name="pseudo" required>
+                <input placeholder="Entrez votre email" type="email" name="email" required>
+                <input placeholder="Entrez votre mots de passe" type="password" name="password" required>
+                <input id="submit" type="submit" value="Rejoindre Stellar League">
             </form>
         </div>
     </main>
