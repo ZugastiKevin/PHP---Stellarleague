@@ -215,8 +215,7 @@
 
                 header('Location:'.BASE_URL.'/pages/tournament.php?id='.$id);
             }
-<<<<<<< HEAD
-=======
+            }
             $requestActiveUsers = $bdd->prepare(
                 'SELECT user_id_continue FROM classement WHERE tournament_id = :tournament_id AND user_id_continue IS NOT NULL AND user_id_continue != 0'
             );
@@ -301,7 +300,6 @@
 
                 header('Location:' . BASE_URL . '/pages/tournament.php?id=' . $id . '&round=' . $nextRound);
             }
->>>>>>> ec0a1b4f33c1da8e6ea8dca2e04be87c883fed02
         }
     } else {
         header('location:'.BASE_URL.'/index.php');
@@ -434,7 +432,6 @@
             <?php endforeach; ?>
             <button type="submit" name="validate_winners">Valider les vainqueurs</button>
         </form>
-<<<<<<< HEAD
 
         <section id="coming-tournament">
             <h2>Tournois En cours</h2>
@@ -560,7 +557,6 @@
 </section>
 
         
-=======
         <form method="post">
             <input type="hidden" name="start_fight" value="1">
             <button type="submit">Lancer le tournoi</button>
@@ -604,7 +600,6 @@
             </div>
         <?php endforeach; ?>
         </div>
->>>>>>> ec0a1b4f33c1da8e6ea8dca2e04be87c883fed02
     </main>
     <?php include_once('../function/scripts.php');?>
 </body>
