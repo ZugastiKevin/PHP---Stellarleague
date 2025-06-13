@@ -109,14 +109,223 @@ main div form #submit {
   color: white;
 }
 
-#main-tournament {
-  background-color: white;
+body {
+  background: #0B0C13;
+  color: #F2F2F2;
+  font-family: "Orbitron", sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
 }
-#main-tournament li {
+
+#main-tournament {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 2rem;
+}
+@media (min-width: 900px) {
+  #main-tournament {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.tournament-form {
+  background: #234538;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+.tournament-form h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #3AB5A4;
+  border-bottom: 2px solid #3AB5A4;
+  padding-bottom: 0.5rem;
+}
+.tournament-form form {
+  display: flex;
+  flex-direction: column;
+}
+.tournament-form form > div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.tournament-form form > div label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.tournament-form form > div input,
+.tournament-form form > div select {
+  padding: 0.5rem;
+  border: 1px solid rgb(10.7951807229, 21.2048192771, 17.3493975904);
+  border-radius: 0.25rem;
+  background: #1C372D;
+  color: #F2F2F2;
+  font-size: 0.9rem;
+}
+.tournament-form form > div input:focus,
+.tournament-form form > div select:focus {
+  outline: none;
+  border-color: #3AB5A4;
+  box-shadow: 0 0 0 2px rgba(58, 181, 164, 0.4);
+}
+.tournament-form form button,
+.tournament-form form input[type=submit] {
+  align-self: flex-start;
+  background: #3AB5A4;
+  color: #0B0C13;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.tournament-form form button:hover,
+.tournament-form form input[type=submit]:hover {
+  background: rgb(88.3891213389, 201.6108786611, 185.9623430962);
+}
+
+.classement {
+  background: #234538;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+.classement h2 {
+  margin-top: 0;
+  color: #3AB5A4;
+  border-bottom: 2px solid #3AB5A4;
+  padding-bottom: 0.5rem;
+}
+.classement ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.classement ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgb(10.7951807229, 21.2048192771, 17.3493975904);
+}
+.classement ul li:last-child {
+  border-bottom: none;
+}
+.classement ul li form {
+  margin: 0;
+}
+.classement ul li form button {
+  background: transparent;
+  border: 1px solid #3AB5A4;
+  color: #3AB5A4;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+.classement ul li form button:hover {
+  background: rgba(58, 181, 164, 0.1);
+}
+.classement p {
+  margin: 0;
+  font-style: italic;
+}
+
+.classement-matchs {
+  grid-column: 1/-1;
+  background: #234538;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+.classement-matchs h2 {
+  margin-top: 0;
+  color: #3AB5A4;
+  border-bottom: 2px solid #3AB5A4;
+  padding-bottom: 0.5rem;
+}
+.classement-matchs table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.classement-matchs table th,
+.classement-matchs table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+.classement-matchs table th {
+  background: #1C372D;
+  color: #F2F2F2;
+  font-weight: 600;
+}
+.classement-matchs table td {
+  background: rgb(19.3975903614, 38.1024096386, 31.1746987952);
+  border-top: 1px solid rgb(2.1927710843, 4.3072289157, 3.5240963855);
+}
+.classement-matchs table tr:nth-child(even) td {
+  background: rgb(14.2361445783, 27.9638554217, 22.8795180723);
+}
+.classement-matchs table em {
   color: white;
 }
-#main-tournament li div {
-  width: 100%;
+.classement-matchs p {
+  margin: 1rem 0 0;
+  font-style: italic;
+}
+
+#main-tournament > ul {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-gap: 1.5rem;
+}
+#main-tournament > ul > li {
+  position: relative;
+  background: #234538;
+  border-left: 4px solid #3AB5A4;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+#main-tournament > ul > li.past-tournament {
+  border-left-color: rgb(20.870292887, 65.129707113, 59.0125523013);
+  opacity: 0.7;
+}
+#main-tournament > ul > li h3 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: #F2F2F2;
+}
+#main-tournament > ul > li .round1,
+#main-tournament > ul > li .round2 {
+  background: #1C372D;
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+}
+#main-tournament > ul > li .round1 ul,
+#main-tournament > ul > li .round2 ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#main-tournament > ul > li .round1 ul li,
+#main-tournament > ul > li .round2 ul li {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgb(2.1927710843, 4.3072289157, 3.5240963855);
+}
+#main-tournament > ul > li .round1 ul li:last-child,
+#main-tournament > ul > li .round2 ul li:last-child {
+  border-bottom: none;
 }
 
 header {
@@ -169,6 +378,26 @@ body {
   margin: 0px auto;
   background-color: #0B0C13;
   font-family: "Orbitron Regular";
+}
+
+#body-index {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#body-index td {
+  border: 2px solid #234538;
+  background-color: #1C372D;
+}
+#body-index td a {
+  color: #3AB5A4;
+}
+#body-index header,
+#body-index header nav {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 section {
