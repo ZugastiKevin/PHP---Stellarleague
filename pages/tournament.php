@@ -279,7 +279,9 @@
                 <p>Aucun match enregistré pour ce tournoi.</p>
             <?php endif; ?>
         </section>
-
+<?php $currentRound = isset($_GET['round'])
+    ? (int) $_GET['round'] 
+    : 1; ?>
         <h2>Valider les matchs du round <?= $currentRound ?></h2>
         <form action="tournament.php?id=<?= $id ?>" method="post">
             <?php foreach ($games as $game): ?>
