@@ -71,11 +71,27 @@
                     'INSERT INTO usersTournament(user_id, tournament_id)
                     VALUES (:user_id, :tournament_id)
                 ');
+                
                 $requestInsertUserClassement = $bdd->prepare(
                     'INSERT INTO classement(tournament_id, user_id_continue)
                     VALUES (:tournament_id, :user_id_continue)
                 ');
+
+                $checkDuplicate = $bdd->prepare(
+                    'SELECT user_id_continue
+                    FROM classement
+                    WHERE user_id_continue = :user_id_continue AND tournament_id = :tournament_id
+                ');
+
                 foreach ($addUserId as $content) {
+                    $checkDuplicate->execute([
+                        'tournament_id' => $id,
+                        'user_id_continue' => (int)$content,
+                    ]);
+                    $alreadyInClassement = $checkDuplicate->fetch();
+                    if ($alreadyInClassement) {
+                        continue;
+                    }
                     $requestInsertUserTournament->execute([
                         'tournament_id'=>$id,
                         'user_id'=>(int)$content
