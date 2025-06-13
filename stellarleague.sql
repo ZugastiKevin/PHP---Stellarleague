@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Jun 12, 2025 at 09:13 PM
+-- Generation Time: Jun 13, 2025 at 10:02 AM
 -- Server version: 8.0.42
 -- PHP Version: 8.2.27
 
@@ -41,7 +41,42 @@ CREATE TABLE `classement` (
 INSERT INTO `classement` (`id`, `tournament_id`, `user_id_continue`, `user_id_stop`) VALUES
 (21, 2, NULL, 2),
 (22, 2, 0, 3),
-(23, 2, 2, NULL);
+(23, 2, NULL, 2),
+(24, 2, NULL, 1),
+(25, 2, NULL, 3),
+(26, 2, NULL, 2),
+(27, 2, NULL, 2),
+(28, 2, 0, 2),
+(29, 2, 0, 3),
+(30, 1, NULL, 3),
+(31, 1, NULL, 2),
+(32, 1, 0, 2),
+(33, 1, 3, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `game`
+--
+
+CREATE TABLE `game` (
+  `id` int NOT NULL,
+  `tournament_id` int NOT NULL,
+  `user_1_id` int NOT NULL,
+  `user_2_id` int NOT NULL,
+  `round_number` int NOT NULL,
+  `winner_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `game`
+--
+
+INSERT INTO `game` (`id`, `tournament_id`, `user_1_id`, `user_2_id`, `round_number`, `winner_id`) VALUES
+(1, 2, 3, 2, 1, 3),
+(2, 2, 3, 2, 1, 3),
+(3, 2, 2, 3, 1, 2),
+(4, 1, 3, 2, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -53,6 +88,13 @@ CREATE TABLE `pending_list` (
   `id` int NOT NULL,
   `tournament_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `pending_list`
+--
+
+INSERT INTO `pending_list` (`id`, `tournament_id`) VALUES
+(1, 2);
 
 -- --------------------------------------------------------
 
@@ -111,8 +153,8 @@ INSERT INTO `users` (`id`, `pseudo`, `email`, `pass`, `userRole`, `imgAvatar`, `
 
 CREATE TABLE `usersPending_list` (
   `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `pending_list_id` int NOT NULL
+  `user_id` int DEFAULT NULL,
+  `pending_list_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -134,7 +176,18 @@ CREATE TABLE `usersTournament` (
 INSERT INTO `usersTournament` (`id`, `user_id`, `tournament_id`) VALUES
 (21, 2, 2),
 (22, 3, 2),
-(23, 2, 2);
+(23, 2, 2),
+(24, 1, 2),
+(25, 1, 2),
+(26, 3, 2),
+(27, 2, 2),
+(28, 2, 2),
+(29, 2, 2),
+(30, 3, 2),
+(31, 3, 1),
+(32, 2, 1),
+(33, 2, 1),
+(34, 3, 1);
 
 --
 -- Indexes for dumped tables
@@ -144,6 +197,12 @@ INSERT INTO `usersTournament` (`id`, `user_id`, `tournament_id`) VALUES
 -- Indexes for table `classement`
 --
 ALTER TABLE `classement`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `game`
+--
+ALTER TABLE `game`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -184,13 +243,19 @@ ALTER TABLE `usersTournament`
 -- AUTO_INCREMENT for table `classement`
 --
 ALTER TABLE `classement`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `game`
+--
+ALTER TABLE `game`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `pending_list`
 --
 ALTER TABLE `pending_list`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tournament`
@@ -208,13 +273,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `usersPending_list`
 --
 ALTER TABLE `usersPending_list`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `usersTournament`
 --
 ALTER TABLE `usersTournament`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
