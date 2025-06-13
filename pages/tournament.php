@@ -71,7 +71,7 @@
                     'INSERT INTO usersTournament(user_id, tournament_id)
                     VALUES (:user_id, :tournament_id)
                 ');
-                
+
                 $requestInsertUserClassement = $bdd->prepare(
                     'INSERT INTO classement(tournament_id, user_id_continue)
                     VALUES (:tournament_id, :user_id_continue)
@@ -164,6 +164,97 @@
 
                 header('Location:'.BASE_URL.'/pages/tournament.php?id='.$id);
             }
+            $requestActiveUsers = $bdd->prepare(
+                'SELECT user_id_continue
+                FROM classement
+                WHERE tournament_id = :tournament_id
+                AND user_id_continue IS NOT NULL
+                AND user_id_continue != 0'
+            );
+            $requestActiveUsers->execute(['tournament_id' => $id]);
+            $users = $requestActiveUsers->fetchAll(PDO::FETCH_COLUMN);
+
+            shuffle($users);
+            $round = 1;
+
+            $insertGame = $bdd->prepare(
+                'INSERT INTO game (user_1_id, user_2_id, tournament_id, round_number)
+                VALUES (:user_1, :user_2, :tournament_id, :round)'
+            );
+
+            for ($i = 0; $i < count($users) - 1; $i += 2) {
+                $insertGame->execute([
+                    'user_1' => $users[$i],
+                    'user_2' => $users[$i + 1],
+                    'tournament_id' => $id,
+                    'round' => $round
+                ]);
+            }
+
+            $currentRound = 1;
+            $requestGames = $bdd->prepare(
+                'SELECT g.id AS game_id,
+                        g.user_1_id, u1.pseudo AS pseudo1,
+                        g.user_2_id, u2.pseudo AS pseudo2,
+                        g.winner_id
+                FROM game g
+                JOIN users u1 ON g.user_1_id = u1.id
+                JOIN users u2 ON g.user_2_id = u2.id
+                WHERE g.tournament_id = :tournament_id AND g.round_number = :round'
+            );
+            $requestGames->execute([
+                'tournament_id' => $id,
+                'round' => $currentRound
+            ]);
+            $games = $requestGames->fetchAll();
+
+            if (isset($_POST['validate_winners']) && isset($_POST['winner'])) {
+            $winners = $_POST['winner'];
+
+            $updateGame = $bdd->prepare(
+                'UPDATE game SET winner_id = :winner_id WHERE id = :game_id'
+            );
+
+            $updateClassement = $bdd->prepare(
+                'UPDATE classement
+                SET user_id_continue = :winner_id,
+                    user_id_stop = :loser_id
+                WHERE tournament_id = :tournament_id
+                AND user_id_continue IN (:winner_id, :loser_id)'
+            );
+
+            foreach ($winners as $gameId => $winnerId) {
+                // Récupère les joueurs du match
+                $stmt = $bdd->prepare('SELECT user_1_id, user_2_id FROM game WHERE id = :id');
+                $stmt->execute(['id' => $gameId]);
+                $match = $stmt->fetch();
+
+                if (!$match) continue;
+
+                $loserId = ($match['user_1_id'] == $winnerId) ? $match['user_2_id'] : $match['user_1_id'];
+
+                // 1. Mettre à jour le gagnant dans la table game
+                $updateGame->execute([
+                    'winner_id' => $winnerId,
+                    'game_id' => $gameId
+                ]);
+
+                // 2. Mettre à jour le classement
+                // On réinitialise la ligne existante
+                $bdd->prepare(
+                    'UPDATE classement
+                    SET user_id_continue = 0,
+                        user_id_stop = :loser_id
+                    WHERE tournament_id = :tournament_id
+                    AND user_id_continue = :loser_id'
+                )->execute([
+                    'tournament_id' => $id,
+                    'loser_id' => $loserId
+                ]);
+            }
+
+            header('Location:'.BASE_URL.'/pages/tournament.php?id='.$id.'&round='.$currentRound.'');
+        }
         }
     } else {
         header('location:'.BASE_URL.'/index.php');
@@ -273,65 +364,27 @@
                 <p>Aucun match enregistré pour ce tournoi.</p>
             <?php endif; ?>
         </section>
-        <ul>
-            <li class="coming-tournament">Tournois 1
-                <div class="round1">
-                    <ul>
-                        <li>
-                            Joueurs Match 1
-                        </li>
-                        <li></li>
-                    </ul>
-                </div>
-                <div class="round2">
-                    <ul>
-                        <li>
-                            Joueurs Match 2
-                        </li>
-                        <li></li>
-                    </ul>
-                </div>
-            </li>
 
-            <li class="coming-tournament">Tournois 1
-                <div class="round1">
-                    <ul>
-                        <li>
-                            Joueurs Match 1
-                        </li>
-                        <li></li>
-                    </ul>
+        <h2>Valider les matchs du round <?= $currentRound ?></h2>
+        <form action="tournament.php?id=<?= $id ?>" method="post">
+            <?php foreach ($games as $game): ?>
+                <div>
+                    <strong>Match <?= $game['game_id'] ?> :</strong>
+                    <?= htmlspecialchars($game['pseudo1']) ?> vs <?= htmlspecialchars($game['pseudo2']) ?><br>
+
+                    <label>
+                        <input type="radio" name="winner[<?= $game['game_id'] ?>]" value="<?= $game['user_1_id'] ?>" required>
+                        <?= htmlspecialchars($game['pseudo1']) ?>
+                    </label>
+                    <label>
+                        <input type="radio" name="winner[<?= $game['game_id'] ?>]" value="<?= $game['user_2_id'] ?>" required>
+                        <?= htmlspecialchars($game['pseudo2']) ?>
+                    </label>
                 </div>
-                <div class="round2">
-                    <ul>
-                        <li>
-                            Joueurs Match 2
-                        </li>
-                        <li></li>
-                    </ul>
-                </div>
-            </li>
-            </li>
-            <li class="past-tournament">Tournois 1
-                <div class="round1">
-                    <ul>
-                        <li>
-                            Joueurs Match 1
-                        </li>
-                        <li></li>
-                    </ul>
-                </div>
-                <div class="round2">
-                    <ul>
-                        <li>
-                            Joueurs Match 2
-                        </li>
-                        <li></li>
-                    </ul>
-                </div>
-            </li>
-            </li>
-        </ul>
+                <hr>
+            <?php endforeach; ?>
+            <button type="submit" name="validate_winners">Valider les vainqueurs</button>
+        </form>
     </main>
     <?php include_once('../function/scripts.php');?>
 </body>
