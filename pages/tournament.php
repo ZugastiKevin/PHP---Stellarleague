@@ -27,6 +27,51 @@
         include_once('../function/head.php');
 
         if (isset($_SESSION["currentUser"]['role']) == 'admin') {
+            if (isset($_POST['start_fight'])) {
+                $requestActiveUsers = $bdd->prepare(
+                    'SELECT user_id_continue FROM classement
+                    WHERE tournament_id = :tournament_id
+                    AND user_id_continue IS NOT NULL AND user_id_continue != 0'
+                );
+                $requestActiveUsers->execute(['tournament_id' => $id]);
+                $users = $requestActiveUsers->fetchAll(PDO::FETCH_COLUMN);
+
+                if (count($users) >= 2) {
+                    shuffle($users);
+                    $round = 1;
+
+                    $insertGame = $bdd->prepare(
+                        'INSERT INTO game (user_1_id, user_2_id, tournament_id, round_number)
+                        VALUES (:user1, :user2, :tournament_id, :round)'
+                    );
+
+                    for ($i = 0; $i < count($users) - 1; $i += 2) {
+                        $insertGame->execute([
+                            'user1' => $users[$i],
+                            'user2' => $users[$i + 1],
+                            'tournament_id' => $id,
+                            'round' => $round
+                        ]);
+                    }
+
+                    if (count($users) % 2 === 1) {
+                        $last = end($users);
+                        $autoWin = $bdd->prepare(
+                            'INSERT INTO game (user_1_id, user_2_id, tournament_id, round_number, winner_id)
+                            VALUES (:user, NULL, :tournament_id, :round, :winner)'
+                        );
+                        $autoWin->execute([
+                            'user' => $last,
+                            'tournament_id' => $id,
+                            'round' => $round,
+                            'winner' => $last
+                        ]);
+                    }
+
+                    header('Location: ' . BASE_URL . '/pages/tournament.php?id=' . $id . '&round=1');
+                    exit;
+                }
+            }
             $requestSelectAllUsers = $bdd->prepare(
                 'SELECT *
                 FROM users
@@ -165,96 +210,89 @@
                 header('Location:'.BASE_URL.'/pages/tournament.php?id='.$id);
             }
             $requestActiveUsers = $bdd->prepare(
-                'SELECT user_id_continue
-                FROM classement
-                WHERE tournament_id = :tournament_id
-                AND user_id_continue IS NOT NULL
-                AND user_id_continue != 0'
+                'SELECT user_id_continue FROM classement WHERE tournament_id = :tournament_id AND user_id_continue IS NOT NULL AND user_id_continue != 0'
             );
             $requestActiveUsers->execute(['tournament_id' => $id]);
             $users = $requestActiveUsers->fetchAll(PDO::FETCH_COLUMN);
 
-            shuffle($users);
-            $round = 1;
+            // Récupération du round actuel
+            $currentRoundStmt = $bdd->prepare('SELECT MAX(round_number) FROM game WHERE tournament_id = :tournament_id');
+            $currentRoundStmt->execute(['tournament_id' => $id]);
+            $currentRound = $currentRoundStmt->fetchColumn() ?: 1;
 
-            $insertGame = $bdd->prepare(
-                'INSERT INTO game (user_1_id, user_2_id, tournament_id, round_number)
-                VALUES (:user_1, :user_2, :tournament_id, :round)'
-            );
-
-            for ($i = 0; $i < count($users) - 1; $i += 2) {
-                $insertGame->execute([
-                    'user_1' => $users[$i],
-                    'user_2' => $users[$i + 1],
-                    'tournament_id' => $id,
-                    'round' => $round
-                ]);
-            }
-
-            $currentRound = 1;
+            // Récupération des matchs du round actuel
             $requestGames = $bdd->prepare(
-                'SELECT g.id AS game_id,
-                        g.user_1_id, u1.pseudo AS pseudo1,
-                        g.user_2_id, u2.pseudo AS pseudo2,
-                        g.winner_id
+                'SELECT g.id AS game_id, g.user_1_id, u1.pseudo AS pseudo1, g.user_2_id, u2.pseudo AS pseudo2, g.winner_id
                 FROM game g
-                JOIN users u1 ON g.user_1_id = u1.id
-                JOIN users u2 ON g.user_2_id = u2.id
+                LEFT JOIN users u1 ON g.user_1_id = u1.id
+                LEFT JOIN users u2 ON g.user_2_id = u2.id
                 WHERE g.tournament_id = :tournament_id AND g.round_number = :round'
             );
-            $requestGames->execute([
-                'tournament_id' => $id,
-                'round' => $currentRound
-            ]);
+            $requestGames->execute(['tournament_id' => $id, 'round' => $currentRound]);
             $games = $requestGames->fetchAll();
 
+            // Traitement des vainqueurs
             if (isset($_POST['validate_winners']) && isset($_POST['winner'])) {
-            $winners = $_POST['winner'];
+                $winners = $_POST['winner'];
 
-            $updateGame = $bdd->prepare(
-                'UPDATE game SET winner_id = :winner_id WHERE id = :game_id'
-            );
+                $updateGame = $bdd->prepare('UPDATE game SET winner_id = :winner_id WHERE id = :game_id');
+                foreach ($winners as $gameId => $winnerId) {
+                    $stmt = $bdd->prepare('SELECT user_1_id, user_2_id FROM game WHERE id = :id');
+                    $stmt->execute(['id' => $gameId]);
+                    $match = $stmt->fetch();
+                    if (!$match) continue;
 
-            $updateClassement = $bdd->prepare(
-                'UPDATE classement
-                SET user_id_continue = :winner_id,
-                    user_id_stop = :loser_id
-                WHERE tournament_id = :tournament_id
-                AND user_id_continue IN (:winner_id, :loser_id)'
-            );
+                    $loserId = ($match['user_1_id'] == $winnerId) ? $match['user_2_id'] : $match['user_1_id'];
+                    $updateGame->execute(['winner_id' => $winnerId, 'game_id' => $gameId]);
 
-            foreach ($winners as $gameId => $winnerId) {
-                // Récupère les joueurs du match
-                $stmt = $bdd->prepare('SELECT user_1_id, user_2_id FROM game WHERE id = :id');
-                $stmt->execute(['id' => $gameId]);
-                $match = $stmt->fetch();
+                    $bdd->prepare(
+                        'UPDATE classement SET user_id_continue = 0, user_id_stop = :loser_id
+                        WHERE tournament_id = :tournament_id AND user_id_continue = :loser_id'
+                    )->execute(['tournament_id' => $id, 'loser_id' => $loserId]);
+                }
 
-                if (!$match) continue;
+                // Génération du prochain round
+                $requestNextPlayers = $bdd->prepare(
+                    'SELECT winner_id FROM game WHERE tournament_id = :tournament_id AND round_number = :round AND winner_id IS NOT NULL'
+                );
+                $requestNextPlayers->execute(['tournament_id' => $id, 'round' => $currentRound]);
+                $nextPlayers = $requestNextPlayers->fetchAll(PDO::FETCH_COLUMN);
 
-                $loserId = ($match['user_1_id'] == $winnerId) ? $match['user_2_id'] : $match['user_1_id'];
+                if (count($nextPlayers) >= 1) {
+                    shuffle($nextPlayers);
+                    $nextRound = $currentRound + 1;
 
-                // 1. Mettre à jour le gagnant dans la table game
-                $updateGame->execute([
-                    'winner_id' => $winnerId,
-                    'game_id' => $gameId
-                ]);
+                    $insertGame = $bdd->prepare(
+                        'INSERT INTO game (user_1_id, user_2_id, tournament_id, round_number)
+                        VALUES (:user1, :user2, :tournament_id, :round)'
+                    );
 
-                // 2. Mettre à jour le classement
-                // On réinitialise la ligne existante
-                $bdd->prepare(
-                    'UPDATE classement
-                    SET user_id_continue = 0,
-                        user_id_stop = :loser_id
-                    WHERE tournament_id = :tournament_id
-                    AND user_id_continue = :loser_id'
-                )->execute([
-                    'tournament_id' => $id,
-                    'loser_id' => $loserId
-                ]);
+                    for ($i = 0; $i < count($nextPlayers) - 1; $i += 2) {
+                        $insertGame->execute([
+                            'user1' => $nextPlayers[$i],
+                            'user2' => $nextPlayers[$i + 1],
+                            'tournament_id' => $id,
+                            'round' => $nextRound
+                        ]);
+                    }
+
+                    if (count($nextPlayers) % 2 === 1) {
+                        $last = end($nextPlayers);
+                        $autoWin = $bdd->prepare(
+                            'INSERT INTO game (user_1_id, user_2_id, tournament_id, round_number, winner_id)
+                            VALUES (:user, NULL, :tournament_id, :round, :winner)'
+                        );
+                        $autoWin->execute([
+                            'user' => $last,
+                            'tournament_id' => $id,
+                            'round' => $nextRound,
+                            'winner' => $last
+                        ]);
+                    }
+                }
+
+                header('Location:' . BASE_URL . '/pages/tournament.php?id=' . $id . '&round=' . $nextRound);
             }
-
-            header('Location:'.BASE_URL.'/pages/tournament.php?id='.$id.'&round='.$currentRound.'');
-        }
         }
     } else {
         header('location:'.BASE_URL.'/index.php');
@@ -385,6 +423,49 @@
             <?php endforeach; ?>
             <button type="submit" name="validate_winners">Valider les vainqueurs</button>
         </form>
+        <form method="post">
+            <input type="hidden" name="start_fight" value="1">
+            <button type="submit">Lancer le tournoi</button>
+        </form>
+
+        <?php
+            // Récupération de tous les matchs pour affichage du bracket
+            $requestAllGames = $bdd->prepare(
+                'SELECT g.*, 
+                        u1.pseudo AS pseudo1, 
+                        u2.pseudo AS pseudo2 
+                FROM game g
+                LEFT JOIN users u1 ON g.user_1_id = u1.id
+                LEFT JOIN users u2 ON g.user_2_id = u2.id
+                WHERE g.tournament_id = :tournament_id
+                ORDER BY g.round_number ASC, g.id ASC'
+            );
+            $requestAllGames->execute(['tournament_id' => $id]);
+            $allGames = $requestAllGames->fetchAll();
+
+            // Organiser les matchs par round
+            $rounds = [];
+            foreach ($allGames as $game) {
+                $rounds[$game['round_number']][] = $game;
+            }
+        ?>
+        <div class="tournament-bracket">
+        <?php foreach ($rounds as $roundNumber => $roundMatches): ?>
+            <div class="round">
+                <h3>Round <?= $roundNumber ?></h3>
+                <?php foreach ($roundMatches as $match): ?>
+                    <div class="match">
+                        <div class="player <?= $match['winner_id'] == $match['user_1_id'] ? 'winner' : '' ?>">
+                            <?= htmlspecialchars($match['pseudo1']) ?? '—' ?>
+                        </div>
+                        <div class="player <?= $match['winner_id'] == $match['user_2_id'] ? 'winner' : '' ?>">
+                            <?= htmlspecialchars($match['pseudo2']) ?? '—' ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endforeach; ?>
+        </div>
     </main>
     <?php include_once('../function/scripts.php');?>
 </body>
