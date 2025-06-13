@@ -90,33 +90,43 @@
             if (isset($_POST["validate_user_id"])) {
                 $validateUserId = $_POST["validate_user_id"];
 
+                if (!is_array($validateUserId)) {
+                    $validateUserId = [$validateUserId];
+                }
+
                 $requestInsertUserTournament = $bdd->prepare(
                     'INSERT INTO usersTournament(user_id, tournament_id)
-                    VALUES (:user_id, :tournament_id)
-                ');
-                $requestInsertUserTournament->execute([
-                    'tournament_id'=>$id,
-                    'user_id'=>(int)$validateUserId
-                ]);
+                    VALUES (:user_id, :tournament_id)'
+                );
 
-                $deleteFromPending = $bdd->prepare(
-                    'DELETE usersPending_list
-                    FROM usersPending_list one
-                    JOIN pending_list e ON one.pending_list_id = e.id
-                    WHERE one.user_id = :user_id AND e.tournament_id = :tournament_id
-                ');
                 $requestInsertUserClassement = $bdd->prepare(
                     'INSERT INTO classement (tournament_id, user_id_continue)
-                    VALUES (:tournament_id, :user_id_continue)
+                    VALUES (:tournament_id, :user_id_continue)'
+                );
+
+                $checkDuplicate = $bdd->prepare(
+                    'SELECT user_id_continue
+                    FROM classement
+                    WHERE user_id_continue = :user_id_continue AND tournament_id = :tournament_id
                 ');
+
                 foreach ($validateUserId as $userId) {
-                    $deleteFromPending->execute([
-                        'tournament_id'=>$id,
-                        'user_id'=>(int)$userId
+                    $checkDuplicate->execute([
+                        'tournament_id' => $id,
+                        'user_id_continue' => (int)$userId,
                     ]);
+                    $alreadyInClassement = $checkDuplicate->fetch();
+                    if ($alreadyInClassement) {
+                        continue;
+                    }
+                    $requestInsertUserTournament->execute([
+                        'tournament_id' => $id,
+                        'user_id' => (int)$userId
+                    ]);
+
                     $requestInsertUserClassement->execute([
-                        'tournament_id'=>$id,
-                        'user_id_continue'=>(int)$userId
+                        'tournament_id' => $id,
+                        'user_id_continue' => (int)$userId
                     ]);
                 }
                 header('location:'.BASE_URL.'/pages/tournament.php?id='.$id);
