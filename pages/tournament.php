@@ -77,7 +77,7 @@
                     'INSERT INTO usersTournament(user_id, tournament_id)
                     VALUES (:user_id, :tournament_id)
                 ');
-                
+
                 $requestInsertUserClassement = $bdd->prepare(
                     'INSERT INTO classement(tournament_id, user_id_continue)
                     VALUES (:tournament_id, :user_id_continue)
@@ -279,6 +279,27 @@
                 <p>Aucun match enregistré pour ce tournoi.</p>
             <?php endif; ?>
         </section>
+
+        <h2>Valider les matchs du round <?= $currentRound ?></h2>
+        <form action="tournament.php?id=<?= $id ?>" method="post">
+            <?php foreach ($games as $game): ?>
+                <div>
+                    <strong>Match <?= $game['game_id'] ?> :</strong>
+                    <?= htmlspecialchars($game['pseudo1']) ?> vs <?= htmlspecialchars($game['pseudo2']) ?><br>
+
+                    <label>
+                        <input type="radio" name="winner[<?= $game['game_id'] ?>]" value="<?= $game['user_1_id'] ?>" required>
+                        <?= htmlspecialchars($game['pseudo1']) ?>
+                    </label>
+                    <label>
+                        <input type="radio" name="winner[<?= $game['game_id'] ?>]" value="<?= $game['user_2_id'] ?>" required>
+                        <?= htmlspecialchars($game['pseudo2']) ?>
+                    </label>
+                </div>
+                <hr>
+            <?php endforeach; ?>
+            <button type="submit" name="validate_winners">Valider les vainqueurs</button>
+        </form>
 
         <section id="coming-tournament">
             <h2>Tournois En cours</h2>
