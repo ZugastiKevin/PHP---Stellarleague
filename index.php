@@ -3,16 +3,75 @@
     include_once 'function/head.php';
 ?>
 
-<body>
+<body id="body-index">
     <?php include_once 'layout/header.php'; 
     if(isset($_SESSION["currentUser"])){
         echo 'Bienvenue, ' . $_SESSION["currentUser"]['pseudo'];
-        var_dump($_SESSION);
     }else{
-        echo 'Hello!';
+        echo 'Bienvenue! Vous devez vous inscrire pour rejoindre un tournois!';
     }
     ?>
     
+<?php
+// 1) On fixe le fuseau
+date_default_timezone_set('Europe/Paris');
 
-    
+// 2) On récupère les tournois en cours (endAt IS NULL)
+$stmt = $bdd->prepare("
+  SELECT id, nameTournament, startAt
+  FROM tournament
+  WHERE endAt IS NULL
+  ORDER BY startAt ASC
+  limit 10
+");
+$stmt->execute();
+$tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<table class="table-tournois">
+  <thead>
+    <tr>
+      <th>Nom du tournois</th>
+      <th>Date de Début</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php if (empty($tournaments)): ?>
+      <tr>
+        <td colspan="3">Aucun tournoi en cours</td>
+      </tr>
+    <?php else: foreach($tournaments as $t): ?>
+      <?php
+        // 3) Conversion en timestamp PHP
+        $ts = is_numeric($t['startAt'])
+              ? (int)$t['startAt']
+              : strtotime($t['startAt']);
+
+        // Pour l'affichage table : format français
+        $dateAffichage = date('d/m/Y H:i', $ts);
+        $defaultStartAt = date('Y-m-d\TH:i', $ts);
+      ?>
+      <tr>
+        <td><?= htmlspecialchars($t['nameTournament'], ENT_QUOTES, 'UTF-8') ?></td>
+        <td><?= $dateAffichage ?></td>
+<?php
+if (
+    !empty($_SESSION['currentUser']['role'])
+    && $_SESSION['currentUser']['role'] === 'user'
+):
+?>
+  <td>
+    <a href="<?= BASE_URL ?>/function/add_pending.php?id=<?= $t['id']?>">Rejoindre<a>
+  </td>
+</tr>
+<?php
+endif;
+?>
+
+    <?php endforeach; endif; ?>
+  </tbody>
+</table>
+
+
 </body>
