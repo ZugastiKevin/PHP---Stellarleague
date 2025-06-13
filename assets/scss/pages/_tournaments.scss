@@ -1,11 +1,262 @@
 @use '../abstracts/variables' as v;
 
-#main-tournament{
-    background-color: white;
-    li {
-        color: white;
-        div{
-            width: 100%;
+
+
+// 1. Variables de thème
+$color-bg:        #0B0C13 !default;
+$color-primary:   #234538 !default;
+$color-secondary: #1C372D !default;
+$color-accent:    #3AB5A4 !default;
+$color-text:      #F2F2F2 !default;
+
+body {
+  background: $color-bg;
+  color: $color-text;
+  font-family: 'Orbitron', sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+#main-tournament {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 2rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.tournament-form {
+  background: $color-primary;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: $color-accent;
+    border-bottom: 2px solid $color-accent;
+    padding-bottom: 0.5rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    // groupe label + input
+    > div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+
+      label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      input,
+      select {
+        padding: 0.5rem;
+        border: 1px solid darken($color-secondary, 10%);
+        border-radius: 0.25rem;
+        background: $color-secondary;
+        color: $color-text;
+        font-size: 0.9rem;
+
+        &:focus {
+          outline: none;
+          border-color: $color-accent;
+          box-shadow: 0 0 0 2px rgba($color-accent, 0.4);
         }
+      }
     }
+
+    // bouton principal
+    button,
+    input[type="submit"] {
+      align-self: flex-start;
+      background: $color-accent;
+      color: $color-bg;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: lighten($color-accent, 10%);
+      }
     }
+  }
+}
+
+// Section classement
+.classement {
+  background: $color-primary;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+  h2 {
+    margin-top: 0;
+    color: $color-accent;
+    border-bottom: 2px solid $color-accent;
+    padding-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid darken($color-secondary, 10%);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      form {
+        margin: 0;
+
+        button {
+          background: transparent;
+          border: 1px solid $color-accent;
+          color: $color-accent;
+          padding: 0.25rem 0.75rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+
+          &:hover {
+            background: rgba($color-accent, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  p {
+    margin: 0;
+    font-style: italic;
+  }
+}
+
+// Section matchs / tableau
+.classement-matchs {
+  grid-column: 1 / -1; // full width
+  background: $color-primary;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+  h2 {
+    margin-top: 0;
+    color: $color-accent;
+    border-bottom: 2px solid $color-accent;
+    padding-bottom: 0.5rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+
+    th,
+    td {
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: $color-secondary;
+      color: $color-text;
+      font-weight: 600;
+    }
+
+    td {
+      background: darken($color-secondary, 5%);
+      border-top: 1px solid darken($color-secondary, 15%);
+    }
+
+    tr:nth-child(even) td {
+      background: darken($color-secondary, 8%);
+    }
+
+    em {
+      color: lighten($color-text, 20%);
+    }
+  }
+
+  p {
+    margin: 1rem 0 0;
+    font-style: italic;
+  }
+}
+
+#main-tournament {
+  > ul {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-gap: 1.5rem;
+
+    > li {
+      position: relative;
+      background: $color-primary;
+      border-left: 4px solid $color-accent;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+
+      &.past-tournament {
+        border-left-color: darken($color-accent, 30%);
+        opacity: 0.7;
+      }
+
+      h3 {
+        margin: 0 0 1rem;
+        font-size: 1.1rem;
+        color: $color-text;
+      }
+
+      .round1,
+      .round2 {
+        background: $color-secondary;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        padding: 0.75rem;
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+
+          li {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid darken($color-secondary, 15%);
+
+            &:last-child {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
