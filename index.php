@@ -29,13 +29,6 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <table class="table-tournois">
-  <thead>
-    <tr>
-      <th>Nom du tournois</th>
-      <th>Date de Début</th>
-      <th>Action</th>
-    </tr>
-  </thead>
   <tbody>
     <?php if (empty($tournaments)): ?>
       <tr>
@@ -43,7 +36,7 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </tr>
     <?php else: foreach($tournaments as $t): ?>
       <?php
-        // 3) Conversion en timestamp PHP
+        //Conversion en timestamp PHP
         $ts = is_numeric($t['startAt'])
               ? (int)$t['startAt']
               : strtotime($t['startAt']);
@@ -53,7 +46,12 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $defaultStartAt = date('Y-m-d\TH:i', $ts);
       ?>
       <tr>
-        <td><?= htmlspecialchars($t['nameTournament'], ENT_QUOTES, 'UTF-8') ?></td>
+        <td>
+  <a href="<?= BASE_URL ?>/pages/tournament.php?id=<?= (int)$t['id'] ?>">
+    <?= htmlspecialchars($t['nameTournament'], ENT_QUOTES, 'UTF-8') ?>
+  </a>
+</td>
+
         <td><?= $dateAffichage ?></td>
 <?php
 if (
@@ -61,6 +59,7 @@ if (
     && $_SESSION['currentUser']['role'] === 'user'
 ):
 ?>
+
   <td>
     <a href="<?= BASE_URL ?>/function/add_pending.php?id=<?= $t['id']?>">Rejoindre<a>
   </td>

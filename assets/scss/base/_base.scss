@@ -11,6 +11,16 @@ body {
 }
 #body-index {
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    td {
+        border: 2px solid v.$color-primary;
+        background-color: v.$color-secondary;
+        a{
+            color: v.$color-accent;
+        }
+    }
 }
 section {
     margin-top: 4rem;
