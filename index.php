@@ -27,7 +27,7 @@ $stmt = $bdd->prepare("
 $stmt->execute();
 $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
+<h2>Les Prochains Tournois</h2>
 <table class="table-tournois">
   <tbody>
     <?php if (empty($tournaments)): ?>
@@ -46,11 +46,19 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $defaultStartAt = date('Y-m-d\TH:i', $ts);
       ?>
       <tr>
-        <td>
-  <a href="<?= BASE_URL ?>/pages/tournament.php?id=<?= (int)$t['id'] ?>">
+<td>
+  <?php if (
+    !empty($_SESSION['currentUser']['role'])
+    && in_array($_SESSION['currentUser']['role'], ['user','admin'], true)
+  ): ?>
+    <a href="<?= BASE_URL ?>/pages/tournament.php?id=<?= (int)$t['id'] ?>">
+      <?= htmlspecialchars($t['nameTournament'], ENT_QUOTES, 'UTF-8') ?>
+    </a>
+  <?php else: ?>
     <?= htmlspecialchars($t['nameTournament'], ENT_QUOTES, 'UTF-8') ?>
-  </a>
+  <?php endif; ?>
 </td>
+
 
         <td><?= $dateAffichage ?></td>
 <?php

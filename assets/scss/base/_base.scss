@@ -21,6 +21,12 @@ body {
             color: v.$color-accent;
         }
     }
+        header,
+    header nav {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+}
 }
 section {
     margin-top: 4rem;
